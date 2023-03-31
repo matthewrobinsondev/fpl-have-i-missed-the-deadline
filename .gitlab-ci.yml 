@@ -29,7 +29,7 @@ before_script:
   - php composer.phar install
 
   # Install Node & build npm
-  - curl -sLS https://deb.nodesource.com/setup_16.18.1 | bash -
+  - curl -sLS https://deb.nodesource.com/setup_16.x | bash -
   - apt-get install gcc g++ make
   - apt-get install -y nodejs
   - npm install -g vite
