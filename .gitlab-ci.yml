@@ -34,7 +34,6 @@ before_script:
   - npm install -g vite
   - npm install -g npm
   - npm run dev
-
   - cp .env.example .env
   # Generate an application key. Re-cache.
   - php artisan key:generate
