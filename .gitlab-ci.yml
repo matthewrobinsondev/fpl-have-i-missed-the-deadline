@@ -13,13 +13,6 @@ variables:
   DB_PASSWORD: secret
   DB_PORT: 3306
 
-# This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-cache:
-  paths:
-    - vendor/
-    - node_modules/
-
 before_script:
   # Update packages
   - apt-get update -yqq
