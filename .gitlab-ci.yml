@@ -35,6 +35,7 @@ before_script:
   - npm cache clean --force
   - rm -rf node_modules
   - npm install
+  - npm install --save-dev vite
   - npm -v
   - npm run dev
   - cp .env.example .env
