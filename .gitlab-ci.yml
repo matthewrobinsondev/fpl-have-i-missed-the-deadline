@@ -1,33 +1,53 @@
-image: 'php:8.1'
+image: php:8.1
 
 services:
   - mysql:5.7
 
-stages:
-  - test
-
 variables:
   MYSQL_DATABASE: did_i_miss_the_deadline
   MYSQL_ROOT_PASSWORD: secret
+  MYSQL_PASSWORD: secret
+  DB_HOST: mysql
+  DB_DATABASE: did_i_miss_the_deadline
+  DB_USERNAME: root
+  DB_PASSWORD: secret
+  DB_PORT: 3306
+
+# This folder is cached between builds
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+cache:
+  paths:
+    - vendor/
+    - node_modules/
+
+before_script:
+  # Update packages
+  - apt-get update -yqq
+  # Prep for Node
+  - apt-get install gnupg -yqq
+  - apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 libzip-dev libpq-dev
+  # Install dependencies
+  - docker-php-ext-install pdo_mysql zip
+  # Install & enable Xdebug for code coverage reports
+  - pecl install xdebug
+  - docker-php-ext-enable xdebug
+  # Install Composer and project dependencies.
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install
+
+  # Install Node & build npm
+  - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
+  - apt-get install -y nodejs
+  - npm install -g npm
+  - npm run build
+
+  - cp .env.example .env
+  # Generate an application key. Re-cache.
+  - php artisan key:generate
+  - php artisan config:clear
+  # Run database migrations.
+  - php artisan migrate:fresh
 
 test:
   script:
-    # Update packages
-    - apt-get update -yqq
-    # Prep for Node
-    - apt-get install gnupg -yqq
-    # Upgrade to Node 8
-    # Install dependencies
-    - apt-get install git nodejs libzip-dev libcurl4-gnutls-dev libicu-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
-    # Install php extensions
-    - docker-php-ext-install pdo_mysql zip opcache gd exif bcmath
-    # Install & enable Xdebug for code coverage reports
-    - pecl install xdebug
-    - docker-php-ext-enable xdebug
-    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-    - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
-    - cp .env.example .env
-    - php artisan key:generate
-    - php artisan config:clear
-    - php artisan migrate:fresh
     - php artisan test
