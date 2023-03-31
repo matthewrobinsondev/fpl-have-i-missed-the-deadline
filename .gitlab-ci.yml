@@ -31,10 +31,10 @@ before_script:
   # Install Node & build npm
   - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
   - apt-get install -y nodejs
-  - npm install npm@9.6.4
   - npm install -g vite
   - npm install -g npm
-  - npm run dev
+  - npm -v
+#  - npm run dev
   - cp .env.example .env
   # Generate an application key. Re-cache.
   - php artisan key:generate
