@@ -1,0 +1,52 @@
+image: php:8.1
+
+stages:
+  - test
+  - build
+
+variables:
+  MYSQL_DATABASE: mydatabase
+  MYSQL_ROOT_PASSWORD: root
+
+services:
+  - mysql:5.7
+
+before_script:
+  - apt-get update
+  - apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip
+  - docker-php-ext-configure gd --with-freetype --with-jpeg
+  - docker-php-ext-install -j$(nproc) gd pdo_mysql zip
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+    - node_modules/
+
+test:
+  stage: test
+  script:
+    - cp .env.example .env
+    - composer install --prefer-dist --no-interaction --no-suggest
+    - php artisan key:generate
+    - php artisan config:cache
+    - php artisan migrate:fresh --seed
+    - vendor/bin/phpunit --coverage-clover coverage.xml
+  coverage: '/^Lines:\s+\d+.\d+%\s+\(.*\)$/'
+
+build:
+  stage: build
+  script:
+    - cp .env.example .env
+    - composer install --prefer-dist --no-interaction --no-suggest
+    - php artisan key:generate
+    - php artisan config:cache
+    - npm install
+    - npm run production
+    - php artisan route:cache
+    - php artisan view:cache
+  artifacts:
+    paths:
+      - public/
+      - vendor/
+      - node_modules/
