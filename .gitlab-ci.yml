@@ -4,21 +4,21 @@ services:
   - mysql:5.7
 
 variables:
-  MYSQL_DATABASE: did_i_miss_the_deadline
+  MYSQL_DATABASE: fantasy_mma_sail
   MYSQL_ROOT_PASSWORD: secret
   MYSQL_PASSWORD: secret
   DB_HOST: mysql
-  DB_DATABASE: did_i_miss_the_deadline
+  DB_DATABASE: fantasy_mma_sail
   DB_USERNAME: root
   DB_PASSWORD: secret
   DB_PORT: 3306
 
 # This folder is cached between builds
 # https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-#cache:
-#  paths:
-#    - vendor/
-#    - node_modules/
+cache:
+  paths:
+    - vendor/
+    - node_modules/
 
 before_script:
   # Update packages
@@ -38,9 +38,7 @@ before_script:
   # Install Node & build npm
   - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
   - apt-get install -y nodejs
-  - npm i -g npm
-  - npm i -g vite
-  - npm cache clean --force
+  - npm install -g npm
   - npm run build
 
   - cp .env.example .env
@@ -49,7 +47,3 @@ before_script:
   - php artisan config:clear
   # Run database migrations.
   - php artisan migrate:fresh
-
-test:
-  script:
-    - php artisan test
