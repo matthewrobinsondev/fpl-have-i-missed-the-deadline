@@ -15,7 +15,12 @@ build:
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - cp .env.example .env
+    # Generate an application key. Re-cache.
     - php artisan key:generate
+    - php artisan config:clear
+    # Run database migrations.
+    - php artisan migrate:fresh
+
   artifacts:
     paths:
       - vendor/
