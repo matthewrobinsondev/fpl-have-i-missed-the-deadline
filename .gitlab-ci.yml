@@ -23,6 +23,6 @@ test:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - cp .env.example .env
     - php artisan key:generate
-    - vendor/bin/phpunit
+    - vendor/bin/pest
   dependencies:
     - build
