@@ -38,6 +38,7 @@ before_script:
   # Install Node & build npm
   - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
   - apt-get install -y nodejs
+  - npm install -g vite
   - npm install -g npm
   - npm run dev
 
