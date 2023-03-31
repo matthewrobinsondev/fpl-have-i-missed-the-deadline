@@ -38,8 +38,8 @@ before_script:
   # Install Node & build npm
   - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
   - apt-get install -y nodejs
-  #- npm install -g npm
-  #- npm run build
+  - npm install -g npm
+  - npm run build
 
   - cp .env.example .env
   # Generate an application key. Re-cache.
