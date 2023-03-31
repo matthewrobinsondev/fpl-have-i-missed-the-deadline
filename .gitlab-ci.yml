@@ -32,11 +32,7 @@ before_script:
   - curl -sLS https://deb.nodesource.com/setup_16.x | bash -
   - apt-get install gcc g++ make
   - apt-get install -y nodejs
-  - npm cache clean --force
-  - rm -rf node_modules
-  - npm install
-  - npm install --save-dev vite
-  - npm -v
+  - npm i
   - npm run build
   - cp .env.example .env
   # Generate an application key. Re-cache.
@@ -48,9 +44,5 @@ before_script:
 test:
   script:
     # run laravel tests, pint & phpstan
-    - php vendor/bin/pint
-    #- php artisan test --env=testing
-    #- php vendor/bin/phpstan
+    - php vendor/bin/pint --test
     - php artisan test
-    #- php artisan test tests/Feature/Controllers/
-    #- php artisan test tests/Feature/Routes/
