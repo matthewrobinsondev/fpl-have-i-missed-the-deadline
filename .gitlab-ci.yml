@@ -9,9 +9,9 @@ stages:
 
 build:
   script:
-    - apt-get update && apt-get install -y zip unzip pdo_mysql
-    - pecl install xdebug
-    - docker-php-ext-enable xdebug
+    - apt-get update && apt-get install -y zip unzip
+    #- pecl install xdebug
+    #- docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - cp .env.example .env
