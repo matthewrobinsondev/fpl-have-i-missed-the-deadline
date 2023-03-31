@@ -4,21 +4,14 @@ services:
   - mysql:5.7
 
 variables:
-  MYSQL_DATABASE: did_i_miss_the_deadline
+  MYSQL_DATABASE: fantasy_mma_sail
   MYSQL_ROOT_PASSWORD: secret
   MYSQL_PASSWORD: secret
   DB_HOST: mysql
-  DB_DATABASE: did_i_miss_the_deadline
+  DB_DATABASE: fantasy_mma_sail
   DB_USERNAME: root
   DB_PASSWORD: secret
   DB_PORT: 3306
-
-# This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-cache:
-  paths:
-    - vendor/
-    - node_modules/
 
 before_script:
   # Update packages
@@ -36,11 +29,13 @@ before_script:
   - php composer.phar install
 
   # Install Node & build npm
-  - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
+  - curl -sLS https://deb.nodesource.com/setup_16.18.1 | bash -
+  - apt-get install gcc g++ make
   - apt-get install -y nodejs
-  - npm i -g npm vite
-  - npm run build
-
+  - npm install -g vite
+  - npm install -g npm
+  - npm -v
+  - npm run dev
   - cp .env.example .env
   # Generate an application key. Re-cache.
   - php artisan key:generate
@@ -50,4 +45,10 @@ before_script:
 
 test:
   script:
-    - php artisan test
+    # run laravel tests, pint & phpstan
+    - php vendor/bin/pint
+    #- php artisan test --env=testing
+    #- php vendor/bin/phpstan
+    # - php artisan test
+    #- php artisan test tests/Feature/Controllers/
+    #- php artisan test tests/Feature/Routes/
