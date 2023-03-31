@@ -47,3 +47,13 @@ before_script:
   - php artisan config:clear
   # Run database migrations.
   - php artisan migrate:fresh
+
+test:
+  script:
+    # run laravel tests, pint & phpstan
+    - php vendor/bin/pint
+    #- php artisan test --env=testing
+    #- php vendor/bin/phpstan
+    - php artisan test
+    #- php artisan test tests/Feature/Controllers/
+    #- php artisan test tests/Feature/Routes/
