@@ -1,16 +1,21 @@
 image: 'php:8.1'
 
+services:
+  - mysql:5.7
+
 stages:
   - build
   - test
 
-before_script:
-  - apt-get update
-  - apt-get install -y php-mysql
-
 build:
   script:
     - apt-get update && apt-get install -y zip unzip
+    # Install PHP extensions
+    - docker-php-ext-install pdo_mysql zip opcache gd exif bcmath
+    # Install & enable Xdebug for code coverage reports
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - cp .env.example .env
