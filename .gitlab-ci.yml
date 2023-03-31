@@ -9,10 +9,7 @@ stages:
 
 build:
   script:
-    - apt-get update && apt-get install -y zip unzip
-    # Install PHP extensions
-    - docker-php-ext-install pdo_mysql zip opcache gd exif bcmath
-    # Install & enable Xdebug for code coverage reports
+    - apt-get update && apt-get install -y zip unzip pdo_mysql
     - pecl install xdebug
     - docker-php-ext-enable xdebug
 
