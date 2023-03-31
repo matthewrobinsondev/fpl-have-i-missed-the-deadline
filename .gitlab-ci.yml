@@ -32,8 +32,9 @@ before_script:
   - curl -sLS https://deb.nodesource.com/setup_16.x | bash -
   - apt-get install gcc g++ make
   - apt-get install -y nodejs
-  - npm install -g vite
-  - npm install -g npm
+  - npm cache clean --force
+  - rm -rf node_modules
+  - npm install
   - npm -v
   - npm run dev
   - cp .env.example .env
