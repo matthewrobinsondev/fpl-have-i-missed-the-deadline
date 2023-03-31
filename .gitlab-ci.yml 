@@ -1,52 +1,53 @@
 image: php:8.1
 
-stages:
-  - test
-  - build
-
-variables:
-  MYSQL_DATABASE: mydatabase
-  MYSQL_ROOT_PASSWORD: root
-
 services:
   - mysql:5.7
 
-before_script:
-  - apt-get update
-  - apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip
-  - docker-php-ext-configure gd --with-freetype --with-jpeg
-  - docker-php-ext-install -j$(nproc) gd pdo_mysql zip
+variables:
+  MYSQL_DATABASE: did_i_miss_the_deadline
+  MYSQL_ROOT_PASSWORD: secret
+  MYSQL_PASSWORD: secret
+  DB_HOST: mysql
+  DB_DATABASE: did_i_miss_the_deadline
+  DB_USERNAME: root
+  DB_PASSWORD: secret
+  DB_PORT: 3306
 
+# This folder is cached between builds
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - vendor/
     - node_modules/
 
-test:
-  stage: test
-  script:
-    - cp .env.example .env
-    - composer install --prefer-dist --no-interaction --no-suggest
-    - php artisan key:generate
-    - php artisan config:cache
-    - php artisan migrate:fresh --seed
-    - vendor/bin/phpunit --coverage-clover coverage.xml
-  coverage: '/^Lines:\s+\d+.\d+%\s+\(.*\)$/'
+before_script:
+  # Update packages
+  - apt-get update -yqq
+  # Prep for Node
+  - apt-get install gnupg -yqq
+  - apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 libzip-dev libpq-dev
+  # Install dependencies
+  - docker-php-ext-install pdo_mysql zip
+  # Install & enable Xdebug for code coverage reports
+  - pecl install xdebug
+  - docker-php-ext-enable xdebug
+  # Install Composer and project dependencies.
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install
 
-build:
-  stage: build
+  # Install Node & build npm
+  - curl -sLS https://deb.nodesource.com/setup_18.x | bash -
+  - apt-get install -y nodejs
+  - npm i -g npm vite
+  - npm run build
+
+  - cp .env.example .env
+  # Generate an application key. Re-cache.
+  - php artisan key:generate
+  - php artisan config:clear
+  # Run database migrations.
+  - php artisan migrate:fresh
+
+test:
   script:
-    - cp .env.example .env
-    - composer install --prefer-dist --no-interaction --no-suggest
-    - php artisan key:generate
-    - php artisan config:cache
-    - npm install
-    - npm run production
-    - php artisan route:cache
-    - php artisan view:cache
-  artifacts:
-    paths:
-      - public/
-      - vendor/
-      - node_modules/
+    - php artisan test
