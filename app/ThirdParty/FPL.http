@@ -1,0 +1,36 @@
+# Taken from https://medium.com/@frenzelts/fantasy-premier-league-api-endpoints-a-detailed-guide-acbd5598eb19
+
+#This endpoint returns general information about the FPL game divided into these sections:
+#events: Basic information of every Gameweek such as average score, highest score, top scoring player, most captained, etc.
+#game_settings: The game settings and rules. (not important)
+#phases: Phases of FPL season. (not really important)
+#teams: Basic information of current Premier League clubs.
+#total_players: Total FPL players.
+#elements: Information of all Premier League players including points, status, value, match stats (goals, assists, etc.), ICT index, etc.
+#element_types: Basic information about player’s position (GK, DEF, MID, FWD).
+GET https://fantasy.premierleague.com/api/bootstrap-static/
+
+###
+
+#This endpoint returns a JSON array which contains every fixture of the season.
+#To get fixtures for specific Gameweek, you can add a parameter after the endpoint path (ex: fixtures?event=7).
+#You can also request only the upcoming fixtures using future parameter (ex: fixtures?future=1).
+#If you set the future value to 0, you will get all fixtures, but if 1 you will only get the upcoming fixtures. I see this parameter as a boolean value (future = true or false).
+GET https://fantasy.premierleague.com/api/fixtures?future=1
+Accept: application/json
+
+###
+GET https://fantasy.premierleague.com/api/fixtures/
+Accept: application/json
+
+###
+GET https://fantasy.premierleague.com/api/event/28/live
+
+Accept: application/json
+
+###
+#
+#Player’s Detailed Data
+#Endpoint path: element-summary/{element_id}/
+#333 is bruno
+GET https://fantasy.premierleague.com/api/element-summary/333?event=28

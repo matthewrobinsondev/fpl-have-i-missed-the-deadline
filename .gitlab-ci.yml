@@ -45,4 +45,4 @@ test:
   script:
     # run laravel tests, pint & phpstan
     - php vendor/bin/pint --test
-    - php artisan test
+    - php artisan test --coverage --min=80.3
