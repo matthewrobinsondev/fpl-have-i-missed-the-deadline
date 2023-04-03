@@ -9,6 +9,7 @@
 #elements: Information of all Premier League players including points, status, value, match stats (goals, assists, etc.), ICT index, etc.
 #element_types: Basic information about player’s position (GK, DEF, MID, FWD).
 GET https://fantasy.premierleague.com/api/bootstrap-static/
+Accept: application/json
 
 ###
 

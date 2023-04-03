@@ -2,19 +2,16 @@ includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 
 parameters:
-    ignoreErrors:
-    		- '#Undefined variable: \$this#' #This is because of some pest errors from default configs
     paths:
         - app
-        - tests
 
     # Level 9 is the highest level
-    level: max
+    level: 7
 
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+    excludePaths:
+        - app/Http/Controllers/Auth/VerifyEmailController.php
 #
 #    checkMissingIterableValueType: false

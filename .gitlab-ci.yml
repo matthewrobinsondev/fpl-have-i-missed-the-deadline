@@ -46,4 +46,5 @@ test:
     - export XDEBUG_MODE=coverage
     # run laravel tests, pint & phpstan
     - php vendor/bin/pint --test
+    - php vendor/bin/phpmd . gitlab phpmd.xml --exclude vendor/
     - php artisan test --coverage --min=80.3
