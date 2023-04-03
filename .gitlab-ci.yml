@@ -47,4 +47,5 @@ test:
     # run laravel tests, pint & phpstan
     - php vendor/bin/pint --test
     - php vendor/bin/phpmd . gitlab phpmd.xml --exclude vendor/
+    - php vendor/bin/phpstan analyze --memory-limit=512M
     - php artisan test --coverage --min=80.3
